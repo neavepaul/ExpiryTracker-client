@@ -167,7 +167,14 @@ const BarcodeScanner = () => {
                     autoHideDuration={5000}
                     onClose={handleSnackbarClose}
                 >
-                    <Alert onClose={handleSnackbarClose} severity="success">
+                    <Alert
+                        onClose={handleSnackbarClose}
+                        severity={
+                            successMessage.includes("successfully")
+                                ? "success"
+                                : "error"
+                        }
+                    >
                         {successMessage}
                     </Alert>
                 </Snackbar>
