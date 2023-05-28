@@ -38,6 +38,7 @@ const Dashboard = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell>Item Name</TableCell>
+                        <TableCell>Comments</TableCell>
                         <TableCell>Expiry Date</TableCell>
                     </TableRow>
                 </TableHead>
@@ -45,6 +46,7 @@ const Dashboard = () => {
                     {sortedItems.map((item) => (
                         <TableRow key={item._id}>
                             <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.comments}</TableCell>
                             <TableCell>{item.expiryDate}</TableCell>
                         </TableRow>
                     ))}

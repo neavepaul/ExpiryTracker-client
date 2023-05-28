@@ -26,17 +26,36 @@ const BarcodeScanner = () => {
         const barcode = result.codeResult.code;
         console.log("Scanned barcode:", barcode);
         // Process the scanned barcode
+        axios
+            .get(
+                `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`
+            )
+            .then((response) => {
+                const productName = response.data.product.product_name;
+                const Quant = response.data.product.quantity;
+                setItemData({ ...itemData, name: productName + " - " + Quant });
+                setShowForm(true); // Open the form
+            })
+            .catch((error) => {
+                console.error("Error retrieving item name:", error);
+                setShowForm(true); // Open the manual add item form on error
+            });
         // Send a request to the server
         axios
-            .post("/api/item", {
+            .post("http://localhost:5000/api/items", {
                 barcode,
                 name: itemData.name,
                 expiryDate: itemData.expiryDate,
             })
             .then(() => {
                 setSuccessMessage("Item added successfully!");
-                // Reset the form
-                setItemData({ name: "", expiryDate: "" });
+                // Reset the form after the API request is completed
+                setItemData({
+                    name: "",
+                    expiryDate: "",
+                    barcode: "",
+                    comments: "",
+                });
             })
             .catch((error) => {
                 console.error("Error adding item:", error);
@@ -101,7 +120,12 @@ const BarcodeScanner = () => {
             .then(() => {
                 setSuccessMessage("Item added successfully!");
                 // Reset the form after the API request is completed
-                setItemData({ name: "", expiryDate: "", barcode: "" });
+                setItemData({
+                    name: "",
+                    expiryDate: "",
+                    barcode: "",
+                    comments: "",
+                });
             })
             .catch((error) => {
                 console.error("Error adding item:", error);
@@ -138,6 +162,16 @@ const BarcodeScanner = () => {
                                 ...itemData,
                                 name: e.target.value,
                                 barcode: "1111111111111",
+                            })
+                        }
+                    />
+                    <TextField
+                        label="Comments"
+                        value={itemData.comments}
+                        onChange={(e) =>
+                            setItemData({
+                                ...itemData,
+                                comments: e.target.value,
                             })
                         }
                     />
