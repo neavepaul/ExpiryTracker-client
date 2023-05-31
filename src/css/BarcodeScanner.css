@@ -1,0 +1,90 @@
+.canvas-container {
+    position: relative;
+    margin-top: 64px; /* Adjust the margin-top value to match your navbar height */
+}
+
+/* Container styles */
+.container {
+    padding: 20px;
+    max-width: 100%; /* Adjust max-width as needed */
+    margin: 0 auto;
+}
+
+/* Barcode scanner styles */
+#barcode-scanner {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    object-fit: cover; /* Ensure the video fills the container */
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+    /* Adjust styles for screens with a maximum width of 480px */
+    .canvas-container {
+        margin-top: 56px; /* Adjust the margin-top value to match your navbar height on smaller screens */
+    }
+    .container {
+        padding: 10px;
+    }
+
+    /* Resize video element to 100% width */
+    #barcode-scanner {
+        width: 100%;
+        height: auto;
+    }
+
+    .button {
+        margin-bottom: 5px;
+    }
+
+    .snackbar {
+        bottom: 10px;
+        left: 10px;
+        width: calc(100% - 20px);
+    }
+}
+
+/* Barcode scanner container styles */
+.barcode-scanner-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 66.66%; /* 320/480 aspect ratio */
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+/* Canvas styles */
+.drawingBuffer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Form styles */
+.form-input {
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+.button {
+    display: block;
+    width: 100%;
+    margin: 0%;
+    /* margin-bottom: 10px; */
+    top: 50%;
+    left: 50%;
+    position: absolute;
+}
+
+/* Snackbar styles */
+.snackbar {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: calc(100% - 40px);
+    max-width: 480px; /* Adjust max-width as needed */
+}

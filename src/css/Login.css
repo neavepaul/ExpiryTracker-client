@@ -1,0 +1,46 @@
+/* CSS for optimizing screens for mobile devices */
+
+/* Container styles */
+.container {
+    padding: 20px;
+    max-width: 480px; /* Adjust max-width as needed */
+    margin: 0 auto;
+}
+
+/* Heading styles */
+.heading {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Input styles */
+.input {
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+.button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+    /* Adjust styles for screens with a maximum width of 480px */
+    .container {
+        padding: 10px;
+    }
+
+    .heading {
+        margin-bottom: 10px;
+    }
+
+    .input {
+        margin-bottom: 10px;
+    }
+
+    .button {
+        margin-bottom: 5px;
+    }
+}

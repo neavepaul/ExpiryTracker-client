@@ -1,51 +1,36 @@
 import React from "react";
-import {
-    BrowserRouter as Router,
-    Route,
-    Routes,
-    Navigate,
-} from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import HomePage from "./components/Home";
-import BarcodeScanner from "./components/BarcodeScanner";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Home from "./components/Home";
 import LoginPage from "./components/Login";
+import Signup from "./components/SignUp";
 import Dashboard from "./components/Dashboard";
+import BarcodeScanner from "./components/BarcodeScanner";
 
-const theme = createTheme();
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: "#2196f3",
+        },
+        secondary: {
+            main: "#f50057",
+        },
+    },
+});
 
 const App = () => {
-    // const isLoggedIn = false;
-
     return (
         <ThemeProvider theme={theme}>
             <Router>
                 <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/scan" element={<BarcodeScanner />} />
+                    <Route exact path="/" element={<Home />} />
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<Signup />} />
                     <Route path="/dash" element={<Dashboard />} />
+                    <Route path="/scan" element={<BarcodeScanner />} />
                 </Routes>
             </Router>
         </ThemeProvider>
-        // <ThemeProvider theme={theme}>
-        //     <Router>
-        //         <Routes>
-        //             <Route path="/" element={<LoginPage />} />
-        //             {isLoggedIn ? (
-        //                 <>
-        //                     <Route path="/home" element={<HomePage />} />
-        //                     <Route path="/scan" element={<BarcodeScanner />} />
-        //                 </>
-        //             ) : (
-        //                 <>
-        //                     <Route>
-        //                         <Navigate to="/login" />
-        //                     </Route>
-        //                 </>
-        //             )}
-        //         </Routes>
-        //     </Router>
-        // </ThemeProvider>
     );
 };
 

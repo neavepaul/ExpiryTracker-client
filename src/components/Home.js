@@ -1,6 +1,5 @@
 import React from "react";
-import { Button, Container, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Container, Typography } from "@mui/material";
 
 const HomePage = () => {
     return (
@@ -9,19 +8,12 @@ const HomePage = () => {
             sx={{ textAlign: "center", marginTop: "2rem" }}
         >
             <Typography variant="h4" component="h1" gutterBottom>
-                Welcome to the Home Page!
+                Welcome to the Expiry Tracker!
             </Typography>
             <Typography variant="body1" gutterBottom>
-                Add your contents and icons here.
+                A MERN application built to help you keep track of your
+                perishables.
             </Typography>
-            <Button
-                variant="contained"
-                component={Link}
-                to="/scan"
-                sx={{ marginTop: "2rem" }}
-            >
-                Go to Barcode Scanner
-            </Button>
         </Container>
     );
 };

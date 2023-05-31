@@ -16,59 +16,41 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import Alert from "@mui/material/Alert";
+import { logout, auth } from "../firebaseConfig.js";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router-dom";
+import { Fab } from "@mui/material";
+import "../css/BarcodeScanner.css";
+import Navbar from "./Navbar.js";
 
 const BarcodeScanner = () => {
     const [showForm, setShowForm] = useState(false);
     const [itemData, setItemData] = useState({ name: "", expiryDate: "" });
     const [successMessage, setSuccessMessage] = useState("");
-
-    const handleBarcodeScan = (result) => {
-        const barcode = result.codeResult.code;
-        console.log("Scanned barcode:", barcode);
-        // Process the scanned barcode
-        axios
-            .get(
-                `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`
-            )
-            .then((response) => {
-                const productName = response.data.product.product_name;
-                const Quant = response.data.product.quantity;
-                setItemData({ ...itemData, name: productName + " - " + Quant });
-                setShowForm(true); // Open the form
-            })
-            .catch((error) => {
-                console.error("Error retrieving item name:", error);
-                setShowForm(true); // Open the manual add item form on error
-            });
-        // Send a request to the server
-        axios
-            .post("http://localhost:5000/api/items", {
-                barcode,
-                name: itemData.name,
-                expiryDate: itemData.expiryDate,
-            })
-            .then(() => {
-                setSuccessMessage("Item added successfully!");
-                // Reset the form after the API request is completed
-                setItemData({
-                    name: "",
-                    expiryDate: "",
-                    barcode: "",
-                    comments: "",
-                });
-            })
-            .catch((error) => {
-                console.error("Error adding item:", error);
-                setSuccessMessage("Error adding item. Please try again.");
-            });
-
-        // Clear the success message after 5 seconds
-        setTimeout(() => {
-            setSuccessMessage("");
-        }, 5000);
-    };
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const currentUser = localStorage.getItem("currentUser");
+        const user = currentUser ? JSON.parse(currentUser) : null;
+        // Check if the user is logged
+        if (!user) {
+            // User is not logged in, navigate to login page
+            navigate("/login");
+        }
+        // const unsubscribe = auth.onAuthStateChanged((user) => {
+        //     if (!user) {
+        //         // User is not logged in, navigate to login page
+        //         navigate("/login");
+        //         return;
+        //     }
+        // });
+
+        // Get the current user's UID from Firebase
+        // const user = auth.currentUser;
+        const uid = user ? user.uid : null;
+        console.log("UID");
+        console.log(uid);
+
         Quagga.init(
             {
                 inputStream: {
@@ -100,7 +82,46 @@ const BarcodeScanner = () => {
         return () => {
             Quagga.stop();
         };
-    }, []);
+    }, [navigate]);
+
+    const handleLogout = () => {
+        logout()
+            .then(() => {
+                // Clear the current user from localStorage
+                localStorage.removeItem("currentUser");
+                // User is successfully logged out, navigate to login page
+                navigate("/login");
+            })
+            .catch((error) => {
+                console.error("Error logging out:", error);
+            });
+    };
+
+    const handleBarcodeScan = (result) => {
+        const barcode = result.codeResult.code;
+        console.log("Scanned barcode:", barcode);
+
+        // Process the scanned barcode
+        axios
+            .get(
+                `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`
+            )
+            .then((response) => {
+                const productName = response.data.product.product_name;
+                const Quant = response.data.product.quantity;
+                setItemData({ ...itemData, name: productName + " - " + Quant });
+                setShowForm(true); // Open the form
+            })
+            .catch((error) => {
+                console.error("Error retrieving item name:", error);
+                setShowForm(true); // Open the manual add item form on error
+            });
+
+        // Clear the success message after 5 seconds
+        setTimeout(() => {
+            setSuccessMessage("");
+        }, 5000);
+    };
 
     const handleFormOpen = () => {
         setShowForm(true);
@@ -111,8 +132,12 @@ const BarcodeScanner = () => {
     };
 
     const handleFormSubmit = () => {
+        // Get the current user's UID from Firebase
+        const user = auth.currentUser;
+        const uid = user ? user.uid : null;
+
         // Make a copy of the itemData to avoid modifying the state directly
-        const data = { ...itemData };
+        const data = { ...itemData, uid: uid };
 
         // Send a request to the server to add the item
         axios
@@ -123,7 +148,6 @@ const BarcodeScanner = () => {
                 setItemData({
                     name: "",
                     expiryDate: "",
-                    barcode: "",
                     comments: "",
                 });
             })
@@ -142,77 +166,101 @@ const BarcodeScanner = () => {
         setSuccessMessage("");
     };
 
+    // useEffect(() => {
+    //     // Check if the user is already logged in
+    //     const user = auth.currentUser;
+    //     if (user) {
+    //         // User is logged in, navigate to the appropriate page
+    //         navigate("/scan");
+    //     } else {
+    //         navigate("/login");
+    //     }
+    // }, []);
+
     return (
         <div>
-            <h1>Barcode Scanner App</h1>
-            <div id="barcode-scanner"></div>
+            <Navbar />
+            <div className="canvas-container">
+                <h1>Barcode Scanner App</h1>
+                <div id="barcode-scanner"></div>
+                <Button variant="contained" onClick={handleFormOpen}>
+                    Add Item Manually
+                </Button>
 
-            <Button variant="contained" onClick={handleFormOpen}>
-                Add Item Manually
-            </Button>
-
-            <Dialog open={showForm} onClose={handleFormClose}>
-                <DialogTitle>Add Item Manually</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Item Name"
-                        value={itemData.name}
-                        onChange={(e) =>
-                            setItemData({
-                                ...itemData,
-                                name: e.target.value,
-                                barcode: "1111111111111",
-                            })
-                        }
-                    />
-                    <TextField
-                        label="Comments"
-                        value={itemData.comments}
-                        onChange={(e) =>
-                            setItemData({
-                                ...itemData,
-                                comments: e.target.value,
-                            })
-                        }
-                    />
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardDatePicker
-                            label="Expiry Date"
-                            value={itemData.expiryDate}
-                            onChange={(date) =>
+                <Dialog open={showForm} onClose={handleFormClose}>
+                    <DialogTitle>Add Item Manually</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            label="Item Name"
+                            value={itemData.name}
+                            onChange={(e) =>
                                 setItemData({
                                     ...itemData,
-                                    expiryDate: date.toISOString(),
+                                    name: e.target.value,
                                 })
                             }
-                            format="yyyy-MM-dd"
                         />
-                    </MuiPickersUtilsProvider>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleFormClose}>Cancel</Button>
-                    <Button onClick={handleFormSubmit}>Add</Button>
-                </DialogActions>
-            </Dialog>
+                        <TextField
+                            label="Comments"
+                            value={itemData.comments}
+                            onChange={(e) =>
+                                setItemData({
+                                    ...itemData,
+                                    comments: e.target.value,
+                                })
+                            }
+                        />
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardDatePicker
+                                label="Expiry Date"
+                                value={itemData.expiryDate}
+                                onChange={(date) =>
+                                    setItemData({
+                                        ...itemData,
+                                        expiryDate: date.toISOString(),
+                                    })
+                                }
+                                format="yyyy-MM-dd"
+                            />
+                        </MuiPickersUtilsProvider>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleFormClose}>Cancel</Button>
+                        <Button onClick={handleFormSubmit}>Add</Button>
+                    </DialogActions>
+                </Dialog>
 
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Snackbar
-                    open={!!successMessage}
-                    autoHideDuration={5000}
-                    onClose={handleSnackbarClose}
-                >
-                    <Alert
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Snackbar
+                        open={!!successMessage}
+                        autoHideDuration={5000}
                         onClose={handleSnackbarClose}
-                        severity={
-                            successMessage.includes("successfully")
-                                ? "success"
-                                : "error"
-                        }
                     >
-                        {successMessage}
-                    </Alert>
-                </Snackbar>
-            </MuiPickersUtilsProvider>
+                        <Alert
+                            onClose={handleSnackbarClose}
+                            severity={
+                                successMessage.includes("successfully")
+                                    ? "success"
+                                    : "error"
+                            }
+                        >
+                            {successMessage}
+                        </Alert>
+                    </Snackbar>
+                </MuiPickersUtilsProvider>
+            </div>
+            <Fab
+                color="primary"
+                aria-label="logout"
+                onClick={handleLogout}
+                style={{
+                    position: "fixed",
+                    bottom: 20,
+                    right: 20,
+                }}
+            >
+                <LogoutIcon />
+            </Fab>
         </div>
     );
 };
