@@ -37,13 +37,6 @@ const BarcodeScanner = () => {
             // User is not logged in, navigate to login page
             navigate("/login");
         }
-        // const unsubscribe = auth.onAuthStateChanged((user) => {
-        //     if (!user) {
-        //         // User is not logged in, navigate to login page
-        //         navigate("/login");
-        //         return;
-        //     }
-        // });
 
         // Get the current user's UID from Firebase
         // const user = auth.currentUser;
@@ -165,17 +158,6 @@ const BarcodeScanner = () => {
     const handleSnackbarClose = () => {
         setSuccessMessage("");
     };
-
-    // useEffect(() => {
-    //     // Check if the user is already logged in
-    //     const user = auth.currentUser;
-    //     if (user) {
-    //         // User is logged in, navigate to the appropriate page
-    //         navigate("/scan");
-    //     } else {
-    //         navigate("/login");
-    //     }
-    // }, []);
 
     return (
         <div>

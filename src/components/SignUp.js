@@ -12,24 +12,6 @@ const Signup = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    // const saveUserToMongo = (email, username) => {
-    //     axios
-    //         .post("http://localhost:5000/signup", { email, username })
-    //         .then(() => navigate("/login"))
-    //         .catch((error) => {
-    //             setError("Error signing up. Please try again.");
-    //         });
-    // };
-
-    // const handleSignup = () => {
-    //     createUser(email, password)
-    //         .then(() => saveUserToMongo(email, username))
-    //         .catch((error) => {
-    //             console.log(error);
-    //             setError("Error signing up. Please try again.");
-    //         });
-    // };
-
     const saveUserToMongo = (email, username) => {
         axios
             .post("http://localhost:5000/signup", { email, username })

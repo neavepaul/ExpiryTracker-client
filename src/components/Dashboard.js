@@ -79,17 +79,6 @@ const Dashboard = () => {
             });
     };
 
-    // useEffect(() => {
-    //     // Check if the user is already logged in
-    //     const user = auth.currentUser;
-    //     if (user) {
-    //         // User is logged in, navigate to the appropriate page
-    //         navigate("/dash");
-    //     } else {
-    //         navigate("/login");
-    //     }
-    // }, []);
-
     return (
         <div>
             <Navbar />
