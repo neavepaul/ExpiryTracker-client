@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, TextField, Typography } from "@material-ui/core";
 import { AccountCircle, Email, Lock } from "@material-ui/icons";
 import axios from "axios";
 import { createUser, auth } from "../firebaseConfig.js";
+import HomeNavbar from "./HomeNavbar.js";
 
 const Signup = () => {
     const [email, setEmail] = useState("");
@@ -53,6 +54,7 @@ const Signup = () => {
 
     return (
         <div>
+            <HomeNavbar />
             <Typography variant="h2">Signup</Typography>
             <TextField
                 variant="outlined"
@@ -92,6 +94,10 @@ const Signup = () => {
             <Button variant="contained" color="primary" onClick={handleSignup}>
                 Signup
             </Button>
+            <Typography variant="body1" gutterBottom>
+                Already have an account?{" "}
+                <Link to="/signup">Let's get you in</Link>!
+            </Typography>
             {error && <Typography color="error">{error}</Typography>}
         </div>
     );

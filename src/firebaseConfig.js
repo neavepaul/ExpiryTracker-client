@@ -22,6 +22,7 @@ await fetch(
 )
     .then((response) => response.json())
     .then((firebaseConfig) => {
+        console.log(firebaseConfig);
         // Use the retrieved Firebase API keys in your client-side code
         CONFIGS = firebaseConfig;
         // Rest of your client-side code
