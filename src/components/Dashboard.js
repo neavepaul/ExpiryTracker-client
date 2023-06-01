@@ -87,6 +87,15 @@ const Dashboard = () => {
                 console.error("Error logging out:", error);
             });
     };
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
+    };
 
     return (
         <div>
@@ -116,7 +125,7 @@ const Dashboard = () => {
                                     {item.comments}
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
-                                    {item.expiryDate}
+                                    {formatDate(item.expiryDate)}
                                 </TableCell>
                             </TableRow>
                         ))}

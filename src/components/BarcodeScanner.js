@@ -25,7 +25,7 @@ import Navbar from "./Navbar.js";
 
 const BarcodeScanner = () => {
     const [showForm, setShowForm] = useState(false);
-    const [itemData, setItemData] = useState({ name: "", expiryDate: "" });
+    const [itemData, setItemData] = useState({ name: "", expiryDate: null });
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
@@ -146,7 +146,7 @@ const BarcodeScanner = () => {
                 // Reset the form after the API request is completed
                 setItemData({
                     name: "",
-                    expiryDate: "",
+                    expiryDate: null,
                     comments: "",
                 });
             })
@@ -178,6 +178,7 @@ const BarcodeScanner = () => {
                 <Dialog open={showForm} onClose={handleFormClose}>
                     <DialogTitle>Add Item Manually</DialogTitle>
                     <DialogContent>
+                        <br />
                         <TextField
                             label="Item Name"
                             value={itemData.name}
@@ -187,7 +188,13 @@ const BarcodeScanner = () => {
                                     name: e.target.value,
                                 })
                             }
+                            style={{
+                                marginBottom: "1rem",
+                            }}
+                            inputProps={{ style: { height: "3rem" } }}
                         />
+                        <br />
+                        <br />
                         <TextField
                             label="Comments"
                             value={itemData.comments}
@@ -197,7 +204,13 @@ const BarcodeScanner = () => {
                                     comments: e.target.value,
                                 })
                             }
+                            style={{
+                                marginBottom: "1rem",
+                            }}
+                            inputProps={{ style: { height: "3rem" } }}
                         />
+                        <br />
+                        <br />
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
                                 label="Expiry Date"
@@ -209,6 +222,10 @@ const BarcodeScanner = () => {
                                     })
                                 }
                                 format="yyyy-MM-dd"
+                                style={{
+                                    marginBottom: "1rem",
+                                }}
+                                inputProps={{ style: { height: "3rem" } }}
                             />
                         </MuiPickersUtilsProvider>
                     </DialogContent>
