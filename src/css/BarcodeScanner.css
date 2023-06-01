@@ -12,9 +12,7 @@
 
 /* Barcode scanner styles */
 #barcode-scanner {
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     object-fit: cover; /* Ensure the video fills the container */
 }
 

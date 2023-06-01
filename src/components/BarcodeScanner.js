@@ -20,6 +20,7 @@ import { logout, auth } from "../firebaseConfig.js";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { Fab } from "@mui/material";
+import Box from "@mui/material/Box";
 import "../css/BarcodeScanner.css";
 import Navbar from "./Navbar.js";
 
@@ -58,8 +59,8 @@ const BarcodeScanner = () => {
                     constraints: {
                         width: 480,
                         height: 320,
-                        // facingMode: "environment", // Use the device's rear camera
-                        facingMode: "user", // Use the device's front camera
+                        facingMode: "environment", // Use the device's rear camera
+                        // facingMode: "user", // Use the device's front camera
                     },
                 },
                 decoder: {
@@ -169,8 +170,23 @@ const BarcodeScanner = () => {
         <div>
             <Navbar />
             <div className="canvas-container">
-                <h1>Scan you Product</h1>
-                <div id="barcode-scanner"></div>
+                <h1>Scan your Product</h1>
+                <Box
+                    sx={{
+                        height: "150px",
+                        width: "90%",
+                        border: "0px solid #000",
+                        borderRadius: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "1rem",
+                        overflow: "hidden",
+                        margin: "0 auto",
+                    }}
+                >
+                    <div id="barcode-scanner"></div>
+                </Box>
+                <br />
                 <Button variant="contained" onClick={handleFormOpen}>
                     Add Item Manually
                 </Button>
