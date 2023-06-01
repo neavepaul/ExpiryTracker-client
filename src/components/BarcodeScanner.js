@@ -32,17 +32,22 @@ const BarcodeScanner = () => {
     useEffect(() => {
         const currentUser = localStorage.getItem("currentUser");
         const user = currentUser ? JSON.parse(currentUser) : null;
-        // Check if the user is logged
-        if (!user) {
-            // User is not logged in, navigate to login page
-            navigate("/login");
-        }
+
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is logged in, save user to local storage
+                localStorage.setItem("currentUser", JSON.stringify(user));
+            } else {
+                // User is not logged in, navigate to login page
+                navigate("/login");
+            }
+        });
 
         // Get the current user's UID from Firebase
         // const user = auth.currentUser;
         const uid = user ? user.uid : null;
-        console.log("UID");
-        console.log(uid);
+        // console.log("UID");
+        // console.log(uid);
 
         Quagga.init(
             {
@@ -74,6 +79,7 @@ const BarcodeScanner = () => {
 
         return () => {
             Quagga.stop();
+            unsubscribe();
         };
     }, [navigate]);
 
@@ -163,7 +169,7 @@ const BarcodeScanner = () => {
         <div>
             <Navbar />
             <div className="canvas-container">
-                <h1>Barcode Scanner App</h1>
+                <h1>Scan you Product</h1>
                 <div id="barcode-scanner"></div>
                 <Button variant="contained" onClick={handleFormOpen}>
                     Add Item Manually

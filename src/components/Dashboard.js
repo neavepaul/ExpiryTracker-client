@@ -33,18 +33,24 @@ const Dashboard = () => {
 
     useEffect(() => {
         // Check if the user is logged in
+
         const currentUser = localStorage.getItem("currentUser");
         const user = currentUser ? JSON.parse(currentUser) : null;
-        // Check if the user is logged
-        if (!user) {
-            // User is not logged in, navigate to login page
-            navigate("/login");
-        }
+
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is logged in, save user to local storage
+                localStorage.setItem("currentUser", JSON.stringify(user));
+            } else {
+                // User is not logged in, navigate to login page
+                navigate("/login");
+            }
+        });
 
         // Get the current user's UID from Firebase
         const uid = user ? user.uid : null;
-        console.log("UID");
-        console.log(uid);
+        // console.log("UID");
+        // console.log(uid);
 
         // Fetch items from the server
         axios
@@ -57,6 +63,9 @@ const Dashboard = () => {
             .catch((error) => {
                 console.error("Error retrieving items:", error);
             });
+
+        // Cleanup the subscription
+        return () => unsubscribe();
     }, [navigate]);
 
     // Sort items by expiry date (closest to furthest)

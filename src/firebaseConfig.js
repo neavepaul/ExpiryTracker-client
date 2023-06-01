@@ -13,18 +13,20 @@ import {
 // Your web app's Firebase configuration
 const SUCCESS = "success";
 const ERROR = "error";
+let CONFIGS = {};
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyAy_Y-hWp0ie0T2jfjByJeQ0hzu_KXdd1E",
-    authDomain: "expiry-tracker-ef39a.firebaseapp.com",
-    projectId: "expiry-tracker-ef39a",
-    storageBucket: "expiry-tracker-ef39a.appspot.com",
-    messagingSenderId: "920964821722",
-    appId: "1:920964821722:web:dd63e587afb3cd89fe2be3",
-    measurementId: "G-LXBTYN0770",
-};
+await fetch("http://localhost:5000/api/secret/firebase-config")
+    .then((response) => response.json())
+    .then((firebaseConfig) => {
+        // Use the retrieved Firebase API keys in your client-side code
+        CONFIGS = firebaseConfig;
+        // Rest of your client-side code
+    })
+    .catch((error) => {
+        console.error("Error retrieving Firebase config:", error);
+    });
 
 function createUser(
     email,
@@ -36,7 +38,6 @@ function createUser(
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
-            console.log(userCredential);
             saveUserToMongoCallback(email, userCredential.user.uid); // Call the callback function to save user details to MongoDB
             successCallback(); // Call the success callback
         })
@@ -53,7 +54,7 @@ function loginUser(email, password) {
         .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
-            console.log(user);
+            // console.log(user);
             return SUCCESS;
             // ...
         })
@@ -71,7 +72,7 @@ function googleAuth() {
         .then((result) => {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const credential = GoogleAuthProvider.credentialFromResult(result);
-            console.log(credential);
+            // console.log(credential);
             return SUCCESS;
         })
         .catch((error) => {
@@ -87,7 +88,7 @@ function logout() {
 }
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(CONFIGS);
 const auth = getAuth(app);
 const user = auth.currentUser;
 const provider = new GoogleAuthProvider();
