@@ -140,7 +140,7 @@ const BarcodeScanner = () => {
 
         // Send a request to the server to add the item
         axios
-            .post("http://localhost:5000/api/items", data)
+            .post("https://expirytracker-brain.onrender.com/api/items", data)
             .then(() => {
                 setSuccessMessage("Item added successfully!");
                 // Reset the form after the API request is completed

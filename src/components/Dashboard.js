@@ -54,7 +54,7 @@ const Dashboard = () => {
 
         // Fetch items from the server
         axios
-            .get("http://localhost:5000/api/items", {
+            .get("https://expirytracker-brain.onrender.com/api/items", {
                 params: { uid: uid },
             })
             .then((response) => {

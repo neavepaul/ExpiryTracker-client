@@ -17,7 +17,9 @@ let CONFIGS = {};
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-await fetch("http://localhost:5000/api/secret/firebase-config")
+await fetch(
+    "https://expirytracker-brain.onrender.com/api/secret/firebase-config"
+)
     .then((response) => response.json())
     .then((firebaseConfig) => {
         // Use the retrieved Firebase API keys in your client-side code

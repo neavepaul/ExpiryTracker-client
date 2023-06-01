@@ -14,7 +14,10 @@ const Signup = () => {
 
     const saveUserToMongo = (email, username) => {
         axios
-            .post("http://localhost:5000/signup", { email, username })
+            .post("https://expirytracker-brain.onrender.com/signup", {
+                email,
+                username,
+            })
             .then(console.log("mongo user add complete"))
             .catch((error) => {
                 setError("Error signing up. Please try again.");
