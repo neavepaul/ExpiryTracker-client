@@ -7,7 +7,7 @@ Expiry Tracker is a web application that helps you keep track of the expiration 
 - Barcode scanning using the device's camera
 - Manual item addition with custom name, comments, and expiry date
 - Firebase authentication for user login/logout
-- Firebase Firestore for storing user data
+- MongoDB for storing user data
 - Integration with Open Food Facts API to retrieve item information
 - Responsive design for mobile and desktop
 
