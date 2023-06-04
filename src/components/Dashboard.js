@@ -13,6 +13,11 @@ import {
     Fab,
     Typography,
     InputAdornment,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { logout, auth } from "../firebaseConfig.js";
@@ -22,9 +27,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import Navbar from "./Navbar.js";
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        backgroundColor: theme.palette.background.default,
+        minHeight: "100vh",
+    },
     tableHeader: {
         fontWeight: "bold",
-        fontSize: "1 rem",
+        fontSize: "1rem",
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
     },
     tableCell: {
         backgroundColor: theme.palette.background.default,
@@ -33,6 +44,22 @@ const useStyles = makeStyles((theme) => ({
         position: "fixed",
         bottom: theme.spacing(2),
         right: theme.spacing(2),
+        backgroundColor: theme.palette.secondary.main,
+        color: theme.palette.secondary.contrastText,
+    },
+    modal: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    modalContent: {
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(3),
+        outline: "none",
+        borderRadius: theme.spacing(1),
+        maxWidth: "400px",
+        minWidth: "320px",
+        margin: "auto",
     },
 }));
 
@@ -42,6 +69,8 @@ const Dashboard = () => {
     const [sortedItems, setSortedItems] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [showSearchIcon, setShowSearchIcon] = useState(true);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -183,6 +212,15 @@ const Dashboard = () => {
         setShowSearchIcon(true);
     };
 
+    const openItemModal = (item) => {
+        setSelectedItem(item);
+        setOpenModal(true);
+    };
+
+    const closeItemModal = () => {
+        setOpenModal(false);
+    };
+
     return (
         <div>
             <Navbar />
@@ -211,11 +249,11 @@ const Dashboard = () => {
                                     Item Name
                                 </Typography>
                             </TableCell>
-                            <TableCell className={classes.tableHeader}>
+                            {/* <TableCell className={classes.tableHeader}>
                                 <Typography variant="h6" component="div">
                                     Comments
                                 </Typography>
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell className={classes.tableHeader}>
                                 <Typography variant="h6" component="div">
                                     Expiry Date
@@ -230,17 +268,24 @@ const Dashboard = () => {
                     </TableHead>
                     <TableBody>
                         {sortedItemsByExpiry.map((item) => (
-                            <TableRow key={item._id}>
+                            <TableRow
+                                key={item._id}
+                                onClick={() => openItemModal(item)}
+                                style={{ cursor: "pointer" }}
+                            >
                                 <TableCell className={classes.tableCell}>
                                     {item.name}
                                 </TableCell>
-                                <TableCell className={classes.tableCell}>
+                                {/* <TableCell className={classes.tableCell}>
                                     {item.comments}
-                                </TableCell>
+                                </TableCell> */}
                                 <TableCell className={classes.tableCell}>
                                     {formatDate(item.expiryDate)}
                                 </TableCell>
-                                <TableCell className={classes.tableCell}>
+                                <TableCell
+                                    className={classes.tableCell}
+                                    align="center"
+                                >
                                     <DoneIcon
                                         color="primary"
                                         onClick={() => handleDelete(item._id)}
@@ -264,6 +309,35 @@ const Dashboard = () => {
             >
                 <LogoutIcon />
             </Fab>
+
+            {selectedItem && (
+                <Dialog
+                    open={openModal}
+                    onClose={closeItemModal}
+                    aria-labelledby="item-dialog-title"
+                    className={classes.modal}
+                >
+                    <DialogTitle id="item-dialog-title">
+                        Item Details
+                    </DialogTitle>
+                    <DialogContent className={classes.modalContent}>
+                        <Typography variant="h6" gutterBottom>
+                            Name: {selectedItem.name}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Expiry Date: {formatDate(selectedItem.expiryDate)}
+                        </Typography>
+                        {selectedItem.comments && (
+                            <Typography variant="body1" gutterBottom>
+                                Description: {selectedItem.comments}
+                            </Typography>
+                        )}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={closeItemModal}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            )}
         </div>
     );
 };

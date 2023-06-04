@@ -1,11 +1,31 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AppBar, Toolbar, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+    AppBar,
+    Toolbar,
+    IconButton,
+    Menu,
+    MenuItem,
+    Typography,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme) => ({
+    appBar: {
+        backgroundColor: theme.palette.primary.main,
+    },
+    title: {
+        color: theme.palette.text.primary,
+        flexGrow: 1,
+        textAlign: "center",
+    },
+}));
 
 const Navbar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const location = useLocation();
+    const classes = useStyles();
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -16,7 +36,7 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" className={classes.appBar}>
             <Toolbar>
                 <IconButton
                     edge="start"
@@ -58,6 +78,9 @@ const Navbar = () => {
                         Expired Items
                     </MenuItem>
                 </Menu>
+                <Typography variant="h6" className={classes.title}>
+                    Expiry Tracker
+                </Typography>
             </Toolbar>
         </AppBar>
     );

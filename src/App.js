@@ -11,10 +11,18 @@ import Expired from "./components/Expired";
 const theme = createTheme({
     palette: {
         primary: {
-            main: "#2196f3",
+            main: "#2196f3", // Set the primary color
+            contrastText: "#ffffff", // Set the contrast text color
         },
         secondary: {
-            main: "#f50057",
+            main: "#f50057", // Set the secondary color
+            contrastText: "#ffffff", // Set the contrast text color
+        },
+        background: {
+            default: "#ffffff", // Set the background color
+        },
+        text: {
+            primary: "#000000", // Set the primary text color
         },
     },
 });
