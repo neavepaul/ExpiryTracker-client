@@ -67,7 +67,7 @@ const Navbar = () => {
                         selected={location.pathname === "/scan"}
                         onClick={handleMenuClose}
                     >
-                        Barcode Scanner
+                        Add Items
                     </MenuItem>
                     <MenuItem
                         component={Link}
