@@ -6,6 +6,7 @@ import LoginPage from "./components/Login";
 import Signup from "./components/SignUp";
 import Dashboard from "./components/Dashboard";
 import BarcodeScanner from "./components/BarcodeScanner";
+import Expired from "./components/Expired";
 
 const theme = createTheme({
     palette: {
@@ -27,6 +28,7 @@ const App = () => {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/dash" element={<Dashboard />} />
+                    <Route path="/expire" element={<Expired />} />
                     <Route path="/scan" element={<BarcodeScanner />} />
                 </Routes>
             </Router>

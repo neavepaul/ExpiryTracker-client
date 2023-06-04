@@ -49,6 +49,14 @@ const Navbar = () => {
                     >
                         Barcode Scanner
                     </MenuItem>
+                    <MenuItem
+                        component={Link}
+                        to="/expire"
+                        selected={location.pathname === "/expire"}
+                        onClick={handleMenuClose}
+                    >
+                        Expired Items
+                    </MenuItem>
                 </Menu>
             </Toolbar>
         </AppBar>

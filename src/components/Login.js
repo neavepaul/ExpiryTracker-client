@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button, TextField, Typography } from "@material-ui/core";
 import { Email, Lock } from "@material-ui/icons";
-import { loginUser, auth } from "../firebaseConfig.js";
+import { loginUser, auth, googleAuth } from "../firebaseConfig.js";
 import "../css/Login.css";
+import GoogleIcon from "@mui/icons-material/Google";
 import HomeNavbar from "./HomeNavbar.js";
 
 const Login = () => {
@@ -33,6 +34,14 @@ const Login = () => {
         <div>
             <HomeNavbar />
             <Typography variant="h2">Login</Typography>
+            <Button
+                variant="outlined"
+                size="large"
+                onClick={() => googleAuth()}
+            >
+                <GoogleIcon />
+                Sign In with Google
+            </Button>
             <TextField
                 variant="outlined"
                 fullWidth

@@ -8,27 +8,40 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    TextField,
     Paper,
     Fab,
+    Typography,
+    InputAdornment,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { logout, auth } from "../firebaseConfig.js";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DoneIcon from "@mui/icons-material/Done";
+import SearchIcon from "@mui/icons-material/Search";
 import Navbar from "./Navbar.js";
 
 const useStyles = makeStyles((theme) => ({
     tableHeader: {
         fontWeight: "bold",
-        fontSize: "1.1rem",
+        fontSize: "1 rem",
     },
     tableCell: {
         backgroundColor: theme.palette.background.default,
+    },
+    fab: {
+        position: "fixed",
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
     },
 }));
 
 const Dashboard = () => {
     const classes = useStyles();
     const [items, setItems] = useState([]);
+    const [sortedItems, setSortedItems] = useState([]);
+    const [searchInput, setSearchInput] = useState("");
+    const [showSearchIcon, setShowSearchIcon] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -59,6 +72,7 @@ const Dashboard = () => {
             })
             .then((response) => {
                 setItems(response.data);
+                setSortedItems(response.data);
             })
             .catch((error) => {
                 console.error("Error retrieving items:", error);
@@ -69,7 +83,7 @@ const Dashboard = () => {
     }, [navigate]);
 
     // Sort items by expiry date (closest to furthest)
-    const sortedItems = items.sort((a, b) => {
+    const sortedItemsByExpiry = sortedItems.sort((a, b) => {
         const expiryDateA = new Date(a.expiryDate);
         const expiryDateB = new Date(b.expiryDate);
         return expiryDateA - expiryDateB;
@@ -87,6 +101,59 @@ const Dashboard = () => {
                 console.error("Error logging out:", error);
             });
     };
+
+    useEffect(() => {
+        const expiredItems = items.filter((item) => {
+            const expiryDate = new Date(item.expiryDate);
+            const today = new Date();
+            return expiryDate < today;
+        });
+
+        if (expiredItems.length > 0) {
+            axios
+                .post(
+                    "https://expirytracker-brain.onrender.com/move-to-expired",
+                    {
+                        items: expiredItems,
+                    }
+                )
+                .then(() => {
+                    console.log("Expired items moved to /expired");
+                    // Remove the expired items from the dashboard
+                    const updatedItems = items.filter((item) => {
+                        const expiryDate = new Date(item.expiryDate);
+                        const today = new Date();
+                        return expiryDate >= today;
+                    });
+                    setItems(updatedItems);
+                })
+                .catch((error) => {
+                    console.error("Error moving expired items:", error);
+                });
+        }
+    }, [items]);
+
+    const handleDelete = (itemId) => {
+        // Send a request to the server to delete the item
+        axios
+            .post("https://expirytracker-brain.onrender.com/deleteItem", {
+                product_id: itemId,
+            })
+            .then((response) => {
+                if (response.data === "success") {
+                    // If the deletion is successful, update the items state
+                    setItems((prevItems) =>
+                        prevItems.filter((item) => item._id !== itemId)
+                    );
+                } else {
+                    console.error("Failed to delete item.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error deleting item:", error);
+            });
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", {
@@ -97,26 +164,72 @@ const Dashboard = () => {
         });
     };
 
+    const handleSearchChange = (event) => {
+        setSearchInput(event.target.value);
+
+        // Filter items based on the search input
+        const filteredItems = items.filter((item) =>
+            item.name.toLowerCase().includes(event.target.value.toLowerCase())
+        );
+
+        setSortedItems(filteredItems);
+    };
+
+    const handleFocus = () => {
+        setShowSearchIcon(false);
+    };
+
+    const handleBlur = () => {
+        setShowSearchIcon(true);
+    };
+
     return (
         <div>
             <Navbar />
+            <TextField
+                label="Search by Name"
+                variant="outlined"
+                value={searchInput}
+                onChange={handleSearchChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ margin: "16px", width: "92%" }}
+                InputProps={{
+                    startAdornment: showSearchIcon && (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    ),
+                }}
+            />
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell className={classes.tableHeader}>
-                                Item Name
+                                <Typography variant="h6" component="div">
+                                    Item Name
+                                </Typography>
                             </TableCell>
                             <TableCell className={classes.tableHeader}>
-                                Comments
+                                <Typography variant="h6" component="div">
+                                    Comments
+                                </Typography>
                             </TableCell>
                             <TableCell className={classes.tableHeader}>
-                                Expiry Date
+                                <Typography variant="h6" component="div">
+                                    Expiry Date
+                                </Typography>
+                            </TableCell>
+                            <TableCell className={classes.tableHeader}>
+                                <Typography variant="h6" component="div">
+                                    Used
+                                </Typography>
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedItems.map((item) => (
+                        {sortedItemsByExpiry.map((item) => (
                             <TableRow key={item._id}>
                                 <TableCell className={classes.tableCell}>
                                     {item.name}
@@ -126,6 +239,12 @@ const Dashboard = () => {
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
                                     {formatDate(item.expiryDate)}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                    <DoneIcon
+                                        color="primary"
+                                        onClick={() => handleDelete(item._id)}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}

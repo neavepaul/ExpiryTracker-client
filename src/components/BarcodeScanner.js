@@ -129,6 +129,7 @@ const BarcodeScanner = () => {
 
     const handleFormClose = () => {
         setShowForm(false);
+        navigate("/dash");
     };
 
     const handleFormSubmit = () => {
