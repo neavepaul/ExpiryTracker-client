@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 // import axios from "axios";
 import {
@@ -79,15 +79,15 @@ const Navbar = () => {
                     >
                         Expired Items
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                         component={Link}
                         to="/profile"
                         selected={location.pathname === "/profile"}
                         onClick={handleMenuClose}
                     >
-                        {/* <AccountCircleIcon /> */}
+                        <AccountCircleIcon />
                         Profile
-                    </MenuItem>
+                    </MenuItem> */}
                 </Menu>
                 <Typography variant="h6" className={classes.title}>
                     Expiry Tracker

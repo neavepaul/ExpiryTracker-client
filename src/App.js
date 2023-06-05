@@ -7,6 +7,7 @@ import Signup from "./components/SignUp";
 import Dashboard from "./components/Dashboard";
 import BarcodeScanner from "./components/BarcodeScanner";
 import Expired from "./components/Expired";
+import Profile from "./components/Profile";
 
 const theme = createTheme({
     palette: {
@@ -38,6 +39,7 @@ const App = () => {
                     <Route path="/dash" element={<Dashboard />} />
                     <Route path="/expire" element={<Expired />} />
                     <Route path="/scan" element={<BarcodeScanner />} />
+                    {/* <Route path="/profile" element={<Profile />} /> */}
                 </Routes>
             </Router>
         </ThemeProvider>
