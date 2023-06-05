@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../firebaseConfig.js";
+import { logout, auth } from "../firebaseConfig.js";
 import axios from "axios";
 import {
     Table,
@@ -68,17 +68,40 @@ const Expired = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Check if the user is logged in
+
+        const currentUser = localStorage.getItem("currentUser");
+        const user = currentUser ? JSON.parse(currentUser) : null;
+
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is logged in, save user to local storage
+                localStorage.setItem("currentUser", JSON.stringify(user));
+            } else {
+                // User is not logged in, navigate to login page
+                navigate("/login");
+            }
+        });
+
+        // Get the current user's UID from Firebase
+        const uid = user ? user.uid : null;
+
+        // Fetch items from the server
         axios
-            .get("https://expirytracker-brain.onrender.com/expired-items")
+            .get("https://expirytracker-brain.onrender.com/expired-items", {
+                params: { uid: uid },
+            })
             .then((response) => {
                 const items = removeDuplicates(response.data);
                 setExpiredItems(items);
-                // setExpiredItems(response.data);
             })
             .catch((error) => {
-                console.error("Error retrieving expired items:", error);
+                console.error("Error retrieving items:", error);
             });
-    }, []);
+
+        // Cleanup the subscription
+        return () => unsubscribe();
+    }, [navigate]);
 
     const removeDuplicates = (items) => {
         // Create a map to track unique items
@@ -159,11 +182,6 @@ const Expired = () => {
                                     Item Name
                                 </Typography>
                             </TableCell>
-                            {/* <TableCell className={classes.tableHeader}>
-                                <Typography variant="h6" component="div">
-                                    Comments
-                                </Typography>
-                            </TableCell> */}
                             <TableCell className={classes.tableHeader}>
                                 <Typography variant="h6" component="div">
                                     Expiry Date
@@ -186,9 +204,6 @@ const Expired = () => {
                                 <TableCell className={classes.tableCell}>
                                     {item.name}
                                 </TableCell>
-                                {/* <TableCell className={classes.tableCell}>
-                                    {item.comments}
-                                </TableCell> */}
                                 <TableCell className={classes.tableCell}>
                                     {formatDate(item.expiryDate)}
                                 </TableCell>

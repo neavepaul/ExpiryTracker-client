@@ -249,11 +249,6 @@ const Dashboard = () => {
                                     Item Name
                                 </Typography>
                             </TableCell>
-                            {/* <TableCell className={classes.tableHeader}>
-                                <Typography variant="h6" component="div">
-                                    Comments
-                                </Typography>
-                            </TableCell> */}
                             <TableCell className={classes.tableHeader}>
                                 <Typography variant="h6" component="div">
                                     Expiry Date
@@ -276,9 +271,6 @@ const Dashboard = () => {
                                 <TableCell className={classes.tableCell}>
                                     {item.name}
                                 </TableCell>
-                                {/* <TableCell className={classes.tableCell}>
-                                    {item.comments}
-                                </TableCell> */}
                                 <TableCell className={classes.tableCell}>
                                     {formatDate(item.expiryDate)}
                                 </TableCell>
