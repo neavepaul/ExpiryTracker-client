@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+// import axios from "axios";
 import {
     AppBar,
     Toolbar,
@@ -8,8 +9,9 @@ import {
     MenuItem,
     Typography,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { makeStyles } from "@mui/styles";
+import MenuIcon from "@mui/icons-material/Menu";
+// import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -76,6 +78,15 @@ const Navbar = () => {
                         onClick={handleMenuClose}
                     >
                         Expired Items
+                    </MenuItem>
+                    <MenuItem
+                        component={Link}
+                        to="/profile"
+                        selected={location.pathname === "/profile"}
+                        onClick={handleMenuClose}
+                    >
+                        {/* <AccountCircleIcon /> */}
+                        Profile
                     </MenuItem>
                 </Menu>
                 <Typography variant="h6" className={classes.title}>
